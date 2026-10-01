@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Study Buddy</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Libraries for processing DOCX and PPTX -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📚 Smart Study Buddy</h1>
+      <p>Paste notes or upload <strong>.docx</strong> / <strong>.pptx</strong> files to create summaries, flashcards, or quizzes via Groq AI.</p>
+    </header>
+
+    <main>
+      <section class="input-section">
+        <div class="file-upload-box">
+          <label for="file-input" class="file-label">📁 Upload .DOCX or .PPTX File</label>
+          <input type="file" id="file-input" accept=".docx, .pptx">
+          <span id="file-name-display">No file selected</span>
+        </div>
+
+        <div class="divider"><span>OR</span></div>
+
+        <label for="study-notes">Paste text directly:</label>
+        <textarea id="study-notes" placeholder="Paste lecture notes, articles, or revision material here..."></textarea>
+        
+        <div class="controls">
+          <div class="mode-selector">
+            <button class="mode-btn active" data-mode="summary">Summary</button>
+            <button class="mode-btn" data-mode="flashcards">Flashcards</button>
+            <button class="mode-btn" data-mode="quiz">Quiz</button>
+          </div>
+          <button id="generate-btn" class="primary-btn">Generate AI Output</button>
+        </div>
+      </section>
+
+      <section class="output-section">
+        <h2>Output Results</h2>
+        <div id="loading-state" class="hidden">
+          <div class="spinner"></div>
+          <p id="loading-text">Extracting document text and processing with Groq LPU...</p>
+        </div>
+        <div id="output-content" class="placeholder-text">
+          Select your input, pick a mode, and click Generate to produce your study materials.
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
