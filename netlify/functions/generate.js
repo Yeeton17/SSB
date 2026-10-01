@@ -37,8 +37,8 @@ exports.handler = async (event) => {
           content: prompt
         }
       ],
-      // CHANGED: Using supported Groq model
-      model: "llama-3.3-70b-versatile",
+      
+      model: "llama-prompt-guard-2-22m",
       temperature: 0.3
     });
 
