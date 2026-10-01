@@ -38,7 +38,7 @@ exports.handler = async (event) => {
         }
       ],
       // CHANGED: Using supported Groq model
-      model: "llama-3.1-70b-versatile",
+      model: "llama-3.3-70b-versatile",
       temperature: 0.3
     });
 
