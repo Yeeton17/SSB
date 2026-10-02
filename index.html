@@ -3,51 +3,134 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Study Buddy</title>
+  <meta name="theme-color" content="#f4f3ed">
+  <meta name="description" content="Turn class notes into focused study guides, flashcards, and quizzes.">
+  <title>Smart Study Buddy | Study workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <!-- Libraries for processing DOCX and PPTX -->
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>📚 Smart Study Buddy</h1>
-      <p>Paste notes or upload <strong>.docx</strong> / <strong>.pptx</strong> files to create summaries, flashcards, or quizzes via Groq AI.</p>
-    </header>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#workspace" aria-label="Smart Study Buddy home">
+        <span class="brand-mark"><i data-lucide="book-open-check"></i></span>
+        <span class="brand-name">study buddy<span>YOUR STUDY SPACE</span></span>
+      </a>
 
-    <main>
-      <section class="input-section">
-        <div class="file-upload-box">
-          <label for="file-input" class="file-label">📁 Upload .DOCX or .PPTX File</label>
-          <input type="file" id="file-input" accept=".docx, .pptx">
-          <span id="file-name-display">No file selected</span>
+      <div class="nav-label">WORKSPACE</div>
+      <nav class="main-nav">
+        <button class="nav-link is-active" type="button" data-view="workspace" aria-current="page">
+          <i data-lucide="notebook-pen"></i><span>Create a set</span>
+        </button>
+        <button class="nav-link" type="button" data-view="library">
+          <i data-lucide="library"></i><span>Saved sets</span><span class="nav-count" id="library-count">0</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <span class="privacy-icon"><i data-lucide="shield-check"></i></span>
+        <div><strong>Your notes stay yours</strong><p>Files are read in your browser. Only extracted text is sent for generation.</p></div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb"><span>STUDY DESK</span><i data-lucide="chevron-right"></i><span id="breadcrumb-current">CREATE A SET</span></div>
+        <div class="topbar-note"><span class="status-dot"></span> A little progress adds up</div>
+      </header>
+
+      <section class="view" id="workspace-view" aria-labelledby="workspace-title">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">MAKE IT MAKE SENSE</p>
+            <h1 id="workspace-title">Build a study set<span>.</span></h1>
+            <p class="page-intro">Bring your class material. Leave with a clearer next step.</p>
+          </div>
+          <div class="heading-stamp" aria-hidden="true"><i data-lucide="sparkles"></i><span>STUDY<br>SMARTER</span></div>
         </div>
 
-        <div class="divider"><span>OR</span></div>
+        <div class="workspace-grid">
+          <section class="source-panel" aria-labelledby="source-title">
+            <div class="section-heading">
+              <span class="step-number">01</span>
+              <div><h2 id="source-title">Your material</h2><p>Paste notes or add a document to get started.</p></div>
+            </div>
 
-        <label for="study-notes">Paste text directly:</label>
-        <textarea id="study-notes" placeholder="Paste lecture notes, articles, or revision material here..."></textarea>
-        
-        <div class="controls">
-          <div class="mode-selector">
-            <button class="mode-btn active" data-mode="summary">Summary</button>
-            <button class="mode-btn" data-mode="flashcards">Flashcards</button>
-            <button class="mode-btn" data-mode="quiz">Quiz</button>
-          </div>
-          <button id="generate-btn" class="primary-btn">Generate AI Output</button>
+            <label class="field-label" for="set-title">Give this set a name <span>OPTIONAL</span></label>
+            <input class="title-input" id="set-title" type="text" maxlength="70" placeholder="e.g. Cell biology · Week 4">
+
+            <div class="source-tools">
+              <label class="field-label" for="study-notes">Study notes</label>
+              <label class="upload-button" for="file-input"><i data-lucide="paperclip"></i><span>Add DOCX / PPTX</span></label>
+              <input type="file" id="file-input" accept=".docx,.pptx">
+            </div>
+            <div class="drop-zone" id="drop-zone">
+              <textarea id="study-notes" maxlength="30000" placeholder="Paste lecture notes, textbook excerpts, or key ideas here..." aria-describedby="source-hint source-count"></textarea>
+              <div class="source-footer">
+                <span id="source-hint">DOCX and PPTX text is extracted on your device.</span>
+                <span id="source-count">0 / 30,000</span>
+              </div>
+              <div class="file-chip hidden" id="file-chip">
+                <i data-lucide="file-text"></i><span id="file-name-display"></span>
+                <button class="icon-button remove-file" id="remove-file" type="button" aria-label="Remove attached file" title="Remove file"><i data-lucide="x"></i></button>
+              </div>
+            </div>
+
+            <div class="section-heading format-heading">
+              <span class="step-number">02</span>
+              <div><h2>Choose a format</h2><p>Pick the kind of practice that fits today.</p></div>
+            </div>
+            <div class="format-options" role="group" aria-label="Study set format">
+              <button class="format-option is-selected" type="button" data-mode="summary" aria-pressed="true">
+                <span class="format-icon"><i data-lucide="align-left"></i></span><span><strong>Study guide</strong><small>Find the main ideas</small></span><i class="format-check" data-lucide="check"></i>
+              </button>
+              <button class="format-option" type="button" data-mode="flashcards" aria-pressed="false">
+                <span class="format-icon"><i data-lucide="layers-2"></i></span><span><strong>Flashcards</strong><small>Recall key concepts</small></span><i class="format-check" data-lucide="check"></i>
+              </button>
+              <button class="format-option" type="button" data-mode="quiz" aria-pressed="false">
+                <span class="format-icon"><i data-lucide="list-checks"></i></span><span><strong>Quick quiz</strong><small>Check what stuck</small></span><i class="format-check" data-lucide="check"></i>
+              </button>
+            </div>
+
+            <div class="form-bottom">
+              <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
+              <button class="primary-button" id="generate-btn" type="button"><span>Create study set</span><i data-lucide="arrow-up-right"></i></button>
+            </div>
+          </section>
+
+          <section class="result-panel" aria-labelledby="result-title">
+            <div class="result-header">
+              <div><p class="eyebrow">YOUR STUDY MATERIAL</p><h2 id="result-title">Ready when you are</h2></div>
+              <span class="result-badge" id="result-badge"><i data-lucide="sparkles"></i><span>NEW SET</span></span>
+            </div>
+            <div class="result-body" id="result-body" aria-live="polite">
+              <div class="empty-state" id="empty-state">
+                <div class="empty-illustration" aria-hidden="true"><span class="orbit orbit-one"></span><span class="orbit orbit-two"></span><i data-lucide="book-open"></i></div>
+                <h3>A clearer way to revise.</h3>
+                <p>Your study guide, flashcards, or quiz will appear here. Start with one topic and build from there.</p>
+                <div class="empty-tip"><i data-lucide="lightbulb"></i><span>Tip: one focused topic makes for a better study set.</span></div>
+              </div>
+              <div class="loading-state hidden" id="loading-state" aria-live="polite">
+                <span class="loading-mark"><i data-lucide="sparkles"></i></span><h3 id="loading-title">Making sense of your notes</h3><p id="loading-text">Pulling out the ideas worth remembering.</p><div class="loading-bar"><span></span></div>
+              </div>
+              <div class="generated-content hidden" id="output-content"></div>
+            </div>
+            <div class="result-foot"><i data-lucide="lock-keyhole"></i><span>Generated from your source material. Check important details against your course notes.</span></div>
+          </section>
         </div>
       </section>
 
-      <section class="output-section">
-        <h2>Output Results</h2>
-        <div id="loading-state" class="hidden">
-          <div class="spinner"></div>
-          <p id="loading-text">Extracting document text and processing with Groq LPU...</p>
+      <section class="view hidden" id="library-view" aria-labelledby="library-title">
+        <div class="page-heading library-heading">
+          <div><p class="eyebrow">PICK UP WHERE YOU LEFT OFF</p><h1 id="library-title">Your saved sets<span>.</span></h1><p class="page-intro">A small collection of things you already know a little better.</p></div>
         </div>
-        <div id="output-content" class="placeholder-text">
-          Select your input, pick a mode, and click Generate to produce your study materials.
-        </div>
+        <div class="library-toolbar"><label class="search-box"><i data-lucide="search"></i><input id="library-search" type="search" placeholder="Find a study set" aria-label="Find a study set"></label><button class="text-button hidden" id="clear-library" type="button">Clear library</button></div>
+        <div class="library-list" id="library-list"></div>
       </section>
     </main>
   </div>

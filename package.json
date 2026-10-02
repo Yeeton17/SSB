@@ -1,11 +1,10 @@
 {
   "name": "smart-study-buddy",
-  "version": "1.0.0",
-  "description": "Smart Study Buddy supporting text, DOCX, and PPTX via Groq API",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Create study guides, flashcards, and quizzes with Hugging Face",
   "main": "app.js",
-  "dependencies": {
-    "groq-sdk": "^0.8.0",
-    "jszip": "^3.10.1",
-    "mammoth": "^1.8.0"
+  "scripts": {
+    "dev": "npx netlify-cli dev"
   }
 }
