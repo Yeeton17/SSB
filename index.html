@@ -111,6 +111,11 @@
               <div><p class="eyebrow">YOUR STUDY MATERIAL</p><h2 id="result-title">Ready when you are</h2></div>
               <span class="result-badge" id="result-badge"><i data-lucide="sparkles"></i><span>NEW SET</span></span>
             </div>
+            <div class="result-clear-controls hidden" id="result-clear-controls" role="group" aria-label="Clear generated study material">
+              <button class="clear-result-button" type="button" data-clear-mode="summary" disabled><i data-lucide="trash-2"></i><span>Clear summary</span></button>
+              <button class="clear-result-button" type="button" data-clear-mode="flashcards" disabled><i data-lucide="trash-2"></i><span>Clear flashcards</span></button>
+              <button class="clear-result-button" type="button" data-clear-mode="quiz" disabled><i data-lucide="trash-2"></i><span>Clear quiz</span></button>
+            </div>
             <div class="result-body" id="result-body" aria-live="polite">
               <div class="empty-state" id="empty-state">
                 <div class="empty-illustration" aria-hidden="true"><span class="orbit orbit-one"></span><span class="orbit orbit-two"></span><i data-lucide="book-open"></i></div>
@@ -132,7 +137,7 @@
         <div class="page-heading library-heading">
           <div><p class="eyebrow">PICK UP WHERE YOU LEFT OFF</p><h1 id="library-title">Your saved sets<span>.</span></h1><p class="page-intro">A small collection of things you already know a little better.</p></div>
         </div>
-        <div class="library-toolbar"><label class="search-box"><i data-lucide="search"></i><input id="library-search" type="search" placeholder="Find a study set" aria-label="Find a study set"></label><button class="text-button hidden" id="clear-library" type="button">Clear library</button></div>
+        <div class="library-toolbar"><label class="search-box"><i data-lucide="search"></i><input id="library-search" type="search" placeholder="Find a study set" aria-label="Find a study set"></label><p class="library-message" id="library-message" role="status" aria-live="polite"></p><button class="text-button hidden" id="clear-library" type="button">Clear all saved sets</button></div>
         <div class="library-list" id="library-list"></div>
       </section>
     </main>

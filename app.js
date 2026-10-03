@@ -7,9 +7,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const emptyState = document.getElementById("empty-state");
   const loadingState = document.getElementById("loading-state");
   const formMessage = document.getElementById("form-message");
+  const resultClearControls = document.getElementById("result-clear-controls");
   const modes = [...document.querySelectorAll(".format-option")];
+  const clearResultButtons = [...document.querySelectorAll("[data-clear-mode]")];
   const storageKey = "smart-study-buddy-sets";
   let activeMode = "summary";
+  let displayedResultMode = null;
   let attachedFile = null;
   let savedSets = loadSavedSets();
 
@@ -312,6 +315,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (handler) handler(result);
 
     const label = modeTitles[mode] || modeTitles.summary;
+    displayedResultMode = mode;
+    resultClearControls.classList.remove("hidden");
+    clearResultButtons.forEach((button) => {
+      button.disabled = button.dataset.clearMode !== mode;
+    });
     document.getElementById("result-title").textContent = label.title;
     document.getElementById("result-badge").lastElementChild.textContent = label.badge;
     emptyState.classList.add("hidden");
@@ -319,6 +327,23 @@ document.addEventListener("DOMContentLoaded", () => {
     outputContent.classList.remove("hidden");
     refreshIcons();
   }
+
+  function clearDisplayedResult(mode) {
+    if (displayedResultMode !== mode) return;
+    outputContent.replaceChildren();
+    outputContent.classList.add("hidden");
+    emptyState.classList.remove("hidden");
+    loadingState.classList.add("hidden");
+    resultClearControls.classList.add("hidden");
+    clearResultButtons.forEach((button) => { button.disabled = true; });
+    displayedResultMode = null;
+    document.getElementById("result-title").textContent = "Ready when you are";
+    document.getElementById("result-badge").lastElementChild.textContent = "NEW SET";
+  }
+
+  clearResultButtons.forEach((button) => {
+    button.addEventListener("click", () => clearDisplayedResult(button.dataset.clearMode));
+  });
 
   document.getElementById("generate-btn").addEventListener("click", async (event) => {
     const button = event.currentTarget;
@@ -334,6 +359,8 @@ document.addEventListener("DOMContentLoaded", () => {
     setMessage("");
     emptyState.classList.add("hidden");
     outputContent.classList.add("hidden");
+    resultClearControls.classList.add("hidden");
+    displayedResultMode = null;
     loadingState.classList.remove("hidden");
 
     try {
@@ -378,6 +405,7 @@ document.addEventListener("DOMContentLoaded", () => {
       errorBox.append(message);
       outputContent.append(errorBox);
       outputContent.classList.remove("hidden");
+      clearResultButtons.forEach((clearButton) => { clearButton.disabled = true; });
       document.getElementById("result-title").textContent = "Could not make that set";
       setMessage("Check the message in your study panel and try again.", true);
       refreshIcons();
@@ -413,9 +441,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     filtered.forEach((item) => {
-      const row = document.createElement("button");
-      row.type = "button";
-      row.className = "library-item";
+      const row = document.createElement("div");
+      row.className = "library-item-row";
+      const openButton = document.createElement("button");
+      openButton.type = "button";
+      openButton.className = "library-item";
       const badge = document.createElement("span");
       badge.className = `library-item-icon ${item.mode}`;
       badge.append(icon(item.mode === "summary" ? "align-left" : item.mode === "flashcards" ? "layers-2" : "list-checks"));
@@ -426,8 +456,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const meta = document.createElement("small");
       meta.textContent = `${item.mode === "summary" ? "Study guide" : item.mode === "flashcards" ? "Flashcards" : "Quick quiz"} · ${formatDate(item.createdAt)}`;
       detail.append(title, meta);
-      row.append(badge, detail, icon("arrow-up-right", "library-open-icon"));
-      row.addEventListener("click", () => {
+      openButton.append(badge, detail, icon("arrow-up-right", "library-open-icon"));
+      openButton.addEventListener("click", () => {
         try {
           renderResult(item.result, item.mode);
           document.getElementById("set-title").value = item.title;
@@ -437,6 +467,25 @@ document.addEventListener("DOMContentLoaded", () => {
           showView("workspace");
         }
       });
+      const removeButton = document.createElement("button");
+      removeButton.type = "button";
+      removeButton.className = "library-delete";
+      removeButton.setAttribute("aria-label", `Delete ${item.title}`);
+      removeButton.title = "Delete this saved set";
+      removeButton.append(icon("trash-2"));
+      removeButton.addEventListener("click", () => {
+        const updatedSets = savedSets.filter((saved) => saved.id !== item.id);
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(updatedSets));
+          savedSets = updatedSets;
+          document.getElementById("library-message").textContent = "";
+          updateLibraryCount();
+          renderLibrary();
+        } catch {
+          document.getElementById("library-message").textContent = "This set could not be deleted from your browser storage.";
+        }
+      });
+      row.append(openButton, removeButton);
       list.append(row);
     });
     refreshIcons();
@@ -444,10 +493,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("library-search").addEventListener("input", renderLibrary);
   document.getElementById("clear-library").addEventListener("click", () => {
-    savedSets = [];
-    localStorage.removeItem(storageKey);
-    updateLibraryCount();
-    renderLibrary();
+    if (!window.confirm("Clear all saved study sets? This cannot be undone.")) return;
+    try {
+      localStorage.removeItem(storageKey);
+      savedSets = [];
+      document.getElementById("library-message").textContent = "";
+      updateLibraryCount();
+      renderLibrary();
+    } catch {
+      document.getElementById("library-message").textContent = "Your saved sets could not be cleared from browser storage.";
+    }
   });
 
   updateCount();
