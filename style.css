@@ -93,9 +93,14 @@ h1 > span { color: var(--coral); }
 .title-input::placeholder { color: #a0a9a0; }
 .source-tools { display: flex; align-items: center; justify-content: space-between; }
 .source-tools .field-label { margin-bottom: 8px; }
+.source-actions { display: flex; align-items: center; gap: 6px; }
 .upload-button { display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px; color: var(--forest); border: 1px solid #d6e0d6; border-radius: 3px; font-size: 10px; font-weight: 700; cursor: pointer; transition: background 150ms ease; }
 .upload-button:hover { background: #edf4ec; }
 .upload-button svg { width: 13px; height: 13px; }
+.clear-material-button { display: inline-flex; align-items: center; gap: 5px; padding: 5px 7px; color: var(--danger); background: transparent; border: 1px solid #ead8d2; border-radius: 3px; font-size: 10px; font-weight: 700; cursor: pointer; transition: background 150ms ease, opacity 150ms ease; }
+.clear-material-button:not(:disabled):hover { background: #fbefeb; }
+.clear-material-button:disabled { opacity: .45; cursor: not-allowed; }
+.clear-material-button svg { width: 13px; height: 13px; }
 #file-input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .drop-zone { border: 1px solid var(--line); border-radius: 3px; transition: border-color 150ms ease, background 150ms ease; }
 .drop-zone.is-dragging { border-color: var(--mint-dark); background: #f2f7f0; }
@@ -259,6 +264,8 @@ h1 > span { color: var(--coral); }
   .heading-stamp svg { width: 19px; height: 19px; }
   .heading-stamp span { font-size: 9px; }
   .source-panel { padding: 17px 13px 13px; }
+  .source-tools { align-items: flex-start; flex-direction: column; gap: 2px; }
+  .source-tools .field-label { margin-bottom: 0; }
   .section-heading { gap: 9px; }
   .section-heading p { font-size: 11px; }
   .format-options { grid-template-columns: 1fr; gap: 6px; }

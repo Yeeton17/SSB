@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const notesArea = document.getElementById("study-notes");
   const fileInput = document.getElementById("file-input");
   const fileChip = document.getElementById("file-chip");
+  const clearMaterialButton = document.getElementById("clear-material");
   const outputContent = document.getElementById("output-content");
   const emptyState = document.getElementById("empty-state");
   const loadingState = document.getElementById("loading-state");
@@ -44,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateCount() {
     const count = notesArea.value.length;
     document.getElementById("source-count").textContent = `${count.toLocaleString()} / 30,000`;
+    clearMaterialButton.disabled = count === 0 && !attachedFile;
   }
 
   function showView(viewName) {
@@ -82,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fileInput.value = "";
     fileChip.classList.add("hidden");
     document.getElementById("file-name-display").textContent = "";
+    updateCount();
   }
 
   function setAttachedFile(file) {
@@ -105,6 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
     attachedFile = file;
     document.getElementById("file-name-display").textContent = file.name;
     fileChip.classList.remove("hidden");
+    updateCount();
     setMessage("");
     refreshIcons();
   }
@@ -112,6 +116,12 @@ document.addEventListener("DOMContentLoaded", () => {
   fileInput.addEventListener("change", () => setAttachedFile(fileInput.files[0]));
   document.getElementById("remove-file").addEventListener("click", () => {
     clearAttachedFileState();
+  });
+  clearMaterialButton.addEventListener("click", () => {
+    notesArea.value = "";
+    clearAttachedFileState();
+    setMessage("");
+    notesArea.focus();
   });
 
   const dropZone = document.getElementById("drop-zone");

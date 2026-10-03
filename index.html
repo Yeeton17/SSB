@@ -66,8 +66,11 @@
 
             <div class="source-tools">
               <label class="field-label" for="study-notes">Study notes</label>
-              <label class="upload-button" for="file-input"><i data-lucide="paperclip"></i><span>Add DOCX / PPTX</span></label>
-              <input type="file" id="file-input" accept=".docx,.pptx">
+              <div class="source-actions">
+                <label class="upload-button" for="file-input"><i data-lucide="paperclip"></i><span>Add DOCX / PPTX</span></label>
+                <button class="clear-material-button" id="clear-material" type="button" disabled><i data-lucide="eraser"></i><span>Clear study material</span></button>
+                <input type="file" id="file-input" accept=".docx,.pptx">
+              </div>
             </div>
             <div class="drop-zone" id="drop-zone">
               <textarea id="study-notes" maxlength="30000" placeholder="Paste lecture notes, textbook excerpts, or key ideas here..." aria-describedby="source-hint source-count"></textarea>
