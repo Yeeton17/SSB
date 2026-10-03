@@ -50,7 +50,7 @@ exports.handler = async (event) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: process.env.HF_MODEL || "Qwen/Qwen3.8-27B:novita",
+        model: process.env.HF_MODEL || "Qwen/Qwen2.5-7B-Instruct",
         messages: [
           {
             role: "system",

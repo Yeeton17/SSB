@@ -78,16 +78,29 @@ document.addEventListener("DOMContentLoaded", () => {
   notesArea.addEventListener("input", updateCount);
 
   function setAttachedFile(file) {
-    if (!file) return;
+    if (!file) {
+      attachedFile = null;
+      fileInput.value = "";
+      fileChip.classList.add("hidden");
+      document.getElementById("file-name-display").textContent = "";
+      return;
+    }
+
     const extension = file.name.split(".").pop().toLowerCase();
     if (!["docx", "pptx"].includes(extension)) {
-      setMessage("Choose a DOCX or PPTX document.", true);
+      attachedFile = null;
       fileInput.value = "";
+      fileChip.classList.add("hidden");
+      document.getElementById("file-name-display").textContent = "";
+      setMessage("Choose a DOCX or PPTX document.", true);
       return;
     }
     if (file.size > 12 * 1024 * 1024) {
-      setMessage("That file is over 12 MB. Try a smaller document.", true);
+      attachedFile = null;
       fileInput.value = "";
+      fileChip.classList.add("hidden");
+      document.getElementById("file-name-display").textContent = "";
+      setMessage("That file is over 12 MB. Try a smaller document.", true);
       return;
     }
     attachedFile = file;
@@ -102,6 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
     attachedFile = null;
     fileInput.value = "";
     fileChip.classList.add("hidden");
+    document.getElementById("file-name-display").textContent = "";
   });
 
   const dropZone = document.getElementById("drop-zone");
