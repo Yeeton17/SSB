@@ -238,6 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.createElement("form");
     form.className = "quiz-form";
     const groups = [];
+    let quizCompleted = false;
 
     questions.forEach((item, index) => {
       const fieldset = document.createElement("fieldset");
@@ -280,6 +281,23 @@ document.addEventListener("DOMContentLoaded", () => {
     form.append(footer);
     form.addEventListener("submit", (event) => {
       event.preventDefault();
+      if (quizCompleted) {
+        quizCompleted = false;
+        groups.forEach(({ fieldset, feedback }) => {
+          fieldset.classList.remove("is-correct", "is-incorrect");
+          feedback.textContent = "";
+          feedback.classList.remove("is-visible");
+          fieldset.querySelectorAll("input").forEach((input) => {
+            input.checked = false;
+            input.disabled = false;
+          });
+        });
+        score.textContent = "";
+        submit.disabled = false;
+        submit.textContent = "Check my answers";
+        return;
+      }
+
       const answers = new FormData(form);
       let correct = 0;
       groups.forEach(({ fieldset, item, feedback }, index) => {
@@ -291,8 +309,9 @@ document.addEventListener("DOMContentLoaded", () => {
         fieldset.querySelectorAll("input").forEach((input) => { input.disabled = true; });
       });
       score.textContent = `You got ${correct} of ${questions.length} right.`;
-      submit.disabled = true;
-      submit.textContent = "Quiz complete";
+      quizCompleted = true;
+      submit.disabled = false;
+      submit.textContent = "Try again";
     });
     outputContent.append(form);
   }
