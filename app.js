@@ -77,32 +77,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
   notesArea.addEventListener("input", updateCount);
 
+  function clearAttachedFileState() {
+    attachedFile = null;
+    fileInput.value = "";
+    fileChip.classList.add("hidden");
+    document.getElementById("file-name-display").textContent = "";
+  }
+
   function setAttachedFile(file) {
     if (!file) {
-      attachedFile = null;
-      fileInput.value = "";
-      fileChip.classList.add("hidden");
-      document.getElementById("file-name-display").textContent = "";
+      clearAttachedFileState();
       return;
     }
 
     const extension = file.name.split(".").pop().toLowerCase();
     if (!["docx", "pptx"].includes(extension)) {
-      attachedFile = null;
-      fileInput.value = "";
-      fileChip.classList.add("hidden");
-      document.getElementById("file-name-display").textContent = "";
+      clearAttachedFileState();
       setMessage("Choose a DOCX or PPTX document.", true);
       return;
     }
     if (file.size > 12 * 1024 * 1024) {
-      attachedFile = null;
-      fileInput.value = "";
-      fileChip.classList.add("hidden");
-      document.getElementById("file-name-display").textContent = "";
+      clearAttachedFileState();
       setMessage("That file is over 12 MB. Try a smaller document.", true);
       return;
     }
+
     attachedFile = file;
     document.getElementById("file-name-display").textContent = file.name;
     fileChip.classList.remove("hidden");
@@ -112,10 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   fileInput.addEventListener("change", () => setAttachedFile(fileInput.files[0]));
   document.getElementById("remove-file").addEventListener("click", () => {
-    attachedFile = null;
-    fileInput.value = "";
-    fileChip.classList.add("hidden");
-    document.getElementById("file-name-display").textContent = "";
+    clearAttachedFileState();
   });
 
   const dropZone = document.getElementById("drop-zone");
@@ -290,11 +286,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderResult(result, mode) {
     outputContent.replaceChildren();
-    if (mode === "summary") renderSummary(result);
-    if (mode === "flashcards") renderFlashcards(result);
-    if (mode === "quiz") renderQuiz(result);
-    document.getElementById("result-title").textContent = mode === "summary" ? "Your study guide" : mode === "flashcards" ? "Your flashcards" : "Your quick quiz";
-    document.getElementById("result-badge").lastElementChild.textContent = mode === "summary" ? "STUDY GUIDE" : mode === "flashcards" ? "FLASHCARDS" : "QUICK QUIZ";
+    const modeHandlers = {
+      summary: renderSummary,
+      flashcards: renderFlashcards,
+      quiz: renderQuiz,
+    };
+
+    const modeTitles = {
+      summary: { title: "Your study guide", badge: "STUDY GUIDE" },
+      flashcards: { title: "Your flashcards", badge: "FLASHCARDS" },
+      quiz: { title: "Your quick quiz", badge: "QUICK QUIZ" },
+    };
+
+    const handler = modeHandlers[mode];
+    if (handler) handler(result);
+
+    const label = modeTitles[mode] || modeTitles.summary;
+    document.getElementById("result-title").textContent = label.title;
+    document.getElementById("result-badge").lastElementChild.textContent = label.badge;
     emptyState.classList.add("hidden");
     loadingState.classList.add("hidden");
     outputContent.classList.remove("hidden");
