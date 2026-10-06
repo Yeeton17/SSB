@@ -4,15 +4,13 @@ Smart Study Buddy turns pasted class notes or DOCX/PPTX files into a study guide
 
 ## Run locally
 
-1. Install Node.js.
-2. In the project folder, run `npm run dev` and open the local URL printed by Netlify.
-3. Add your Hugging Face access token to a local `.env` file:
+1. Install Node.js 20.6 or newer.
+2. Set `HF_TOKEN` in the root `.env` file. A template is available in `.env.example`.
+3. In the project folder, run `npm start` and open <http://127.0.0.1:3000>.
 
-```text
-HF_TOKEN=hf_your_token_here
-```
+The Node server serves the app and its generation endpoint. For Netlify's local emulation instead, run `npm run dev`.
 
-The default model is `Qwen/Qwen2.5-7B-Instruct`. To use another model available through Hugging Face Inference Providers, add `HF_MODEL=provider/model-name` to `.env`.
+To use a different model available through Hugging Face Inference Providers, set `HF_MODEL=provider/model-name` in `.env`. `HOST` and `PORT` can also be configured there.
 
 ## Deploy to Netlify
 
@@ -22,4 +20,3 @@ The default model is `Qwen/Qwen2.5-7B-Instruct`. To use another model available 
 4. Deploy. The site publishes from the project root, and the generation endpoint is deployed from `netlify/functions`.
 
 The Hugging Face token is read only by the Netlify function. Do not put it in client-side JavaScript or commit it to Git. Uploaded documents are parsed in the browser; only extracted text is sent to the function. The app accepts DOCX and PPTX files up to 12 MB and limits generated source text to 30,000 characters.
-

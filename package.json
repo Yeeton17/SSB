@@ -5,6 +5,7 @@
   "description": "Create study guides, flashcards, and quizzes with Hugging Face",
   "main": "app.js",
   "scripts": {
+    "start": "node --env-file=.env server.js",
     "dev": "npx netlify-cli dev"
   }
 }
