@@ -19,4 +19,4 @@ To use a different model available through Hugging Face Inference Providers, set
 3. Optionally add `HF_MODEL` if you want a different provider-supported chat model.
 4. Deploy. The site publishes from the project root, and the generation endpoint is deployed from `netlify/functions`.
 
-The Hugging Face token is read only by the Netlify function. Do not put it in client-side JavaScript or commit it to Git. Uploaded documents are parsed in the browser; only extracted text is sent to the function. The app accepts DOCX and PPTX files up to 12 MB and limits generated source text to 30,000 characters.
+Uploaded documents are parsed in the browser; only extracted text is sent to the function. The app accepts DOCX and PPTX files up to 12 MB and limits generated source text to 30,000 characters.
